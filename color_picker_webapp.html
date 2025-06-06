@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Picker for Guitar Design</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    #diagram {
+      position: relative;
+      width: 960px;
+      max-width: 100%;
+    }
+    #diagram img {
+      width: 100%;
+      display: block;
+    }
+    .shape {
+      position: absolute;
+      cursor: pointer;
+      opacity: 0.4;
+    }
+    .color-picker {
+      margin-top: 20px;
+    }
+    .export {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Choose Your Colors</h1>
+  <div id="diagram">
+    <img src="UniStrum%20Diagram.png" alt="Guitar Diagram" />
+    <!-- Example shape overlays with IDs -->
+    <!-- Adjust top/left/width/height to fit actual shape positions -->
+    <div class="shape" id="shape1" style="top: 60px; left: 100px; width: 40px; height: 60px;"></div>
+    <div class="shape" id="shape2" style="top: 60px; left: 150px; width: 40px; height: 60px;"></div>
+    <!-- Repeat for all shapes up to shape15 -->
+  </div>
+  <div class="color-picker">
+    <label for="selected-shape">Select Shape:</label>
+    <select id="selected-shape">
+      <option value="shape1">1</option>
+      <option value="shape2">2</option>
+      <!-- Add all shapes up to 15 -->
+    </select>
+    <input type="color" id="color" />
+    <button onclick="applyColor()">Apply Color</button>
+  </div>
+  <div class="export">
+    <button onclick="copyColors()">Copy Color Configuration</button>
+    <textarea id="color-output" rows="5" cols="50" readonly></textarea>
+  </div>
+
+  <script>
+    const colors = {};
+
+    function applyColor() {
+      const shapeId = document.getElementById('selected-shape').value;
+      const color = document.getElementById('color').value;
+      document.getElementById(shapeId).style.backgroundColor = color;
+      colors[shapeId] = color;
+    }
+
+    function copyColors() {
+      const output = JSON.stringify(colors, null, 2);
+      const outputBox = document.getElementById('color-output');
+      outputBox.value = output;
+      outputBox.select();
+      document.execCommand('copy');
+    }
+  </script>
+</body>
+</html>
