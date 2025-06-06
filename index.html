@@ -1,80 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Color Picker for Guitar Design</title>
+  <meta charset="UTF-8">
+  <title>UniStrum Color Picker</title>
   <style>
     body {
       font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      text-align: center;
+      background: #f2f2f2;
     }
-    #diagram {
+    .container {
       position: relative;
-      width: 960px;
-      max-width: 100%;
+      display: inline-block;
     }
-    #diagram img {
+    img {
       width: 100%;
-      display: block;
+      max-width: 800px;
+      height: auto;
     }
     .shape {
       position: absolute;
+      border: 2px dashed transparent;
       cursor: pointer;
-      opacity: 0.4;
+      border-radius: 4px;
     }
-    .color-picker {
-      margin-top: 20px;
+    .shape:hover {
+      border-color: #888;
     }
-    .export {
+    #colorsOutput {
       margin-top: 20px;
+      white-space: pre-wrap;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
 <body>
-  <h1>Choose Your Colors</h1>
-  <div id="diagram">
-    <img src="UniStrum%20Diagram.png" alt="Guitar Diagram" />
-    <!-- Example shape overlays with IDs -->
-    <!-- Adjust top/left/width/height to fit actual shape positions -->
-    <div class="shape" id="shape1" style="top: 60px; left: 100px; width: 40px; height: 60px;"></div>
-    <div class="shape" id="shape2" style="top: 60px; left: 150px; width: 40px; height: 60px;"></div>
-    <!-- Repeat for all shapes up to shape15 -->
+  <h1>🎸 UniStrum Color Picker</h1>
+
+  <div class="container">
+    <img src="UniStrum Diagram.png" alt="UniStrum Diagram" id="diagram">
+
+    <!-- Define numbered interactive zones -->
+    <div class="shape" data-id="1" style="top:35%; left:6.5%; width:4%; height:8%;"></div>
+    <div class="shape" data-id="2" style="top:35%; left:12%; width:4%; height:8%;"></div>
+    <div class="shape" data-id="3" style="top:35%; left:17.5%; width:4%; height:8%;"></div>
+    <div class="shape" data-id="4" style="top:35%; left:23%; width:4%; height:8%;"></div>
+    <div class="shape" data-id="5" style="top:35%; left:28.5%; width:4%; height:8%;"></div>
+
+    <div class="shape" data-id="6" style="top:51%; left:40%; width:3%; height:5%;"></div>
+    <div class="shape" data-id="7" style="top:46%; left:42.5%; width:3%; height:5%;"></div>
+    <div class="shape" data-id="8" style="top:56%; left:42.5%; width:3%; height:5%;"></div>
+    <div class="shape" data-id="9" style="top:51%; left:45%; width:3%; height:5%;"></div>
+
+    <div class="shape" data-id="10" style="top:45%; left:48.5%; width:20%; height:10%;"></div>
+    <div class="shape" data-id="11" style="top:44%; left:70.5%; width:3%; height:4%;"></div>
+    <div class="shape" data-id="12" style="top:39%; left:70.5%; width:3%; height:4%;"></div>
+    <div class="shape" data-id="13" style="top:40%; left:76%; width:7%; height:12%;"></div>
+    <div class="shape" data-id="14" style="top:25%; left:2%; width:30%; height:15%;"></div>
+    <div class="shape" data-id="15" style="top:10%; left:65%; width:30%; height:30%;"></div>
   </div>
-  <div class="color-picker">
-    <label for="selected-shape">Select Shape:</label>
-    <select id="selected-shape">
-      <option value="shape1">1</option>
-      <option value="shape2">2</option>
-      <!-- Add all shapes up to 15 -->
-    </select>
-    <input type="color" id="color" />
-    <button onclick="applyColor()">Apply Color</button>
-  </div>
-  <div class="export">
-    <button onclick="copyColors()">Copy Color Configuration</button>
-    <textarea id="color-output" rows="5" cols="50" readonly></textarea>
-  </div>
+
+  <br>
+  <button onclick="copyColors()">📋 Copy Color Configuration</button>
+  <div id="colorsOutput">(Colors will show here)</div>
 
   <script>
     const colors = {};
 
-    function applyColor() {
-      const shapeId = document.getElementById('selected-shape').value;
-      const color = document.getElementById('color').value;
-      document.getElementById(shapeId).style.backgroundColor = color;
-      colors[shapeId] = color;
+    document.querySelectorAll('.shape').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.id;
+        const currentColor = colors[id] || '#ffffff';
+        const picked = prompt(`Pick a color for shape ${id}`, currentColor);
+        if (picked) {
+          colors[id] = picked;
+          el.style.backgroundColor = picked;
+        }
+        updateDisplay();
+      });
+    });
+
+    function updateDisplay() {
+      const output = JSON.stringify(colors, null, 2);
+      document.getElementById('colorsOutput').textContent = output;
     }
 
     function copyColors() {
-      const output = JSON.stringify(colors, null, 2);
-      const outputBox = document.getElementById('color-output');
-      outputBox.value = output;
-      outputBox.select();
-      document.execCommand('copy');
+      navigator.clipboard.writeText(JSON.stringify(colors, null, 2)).then(() => {
+        alert('Color configuration copied!');
+      });
     }
   </script>
 </body>
